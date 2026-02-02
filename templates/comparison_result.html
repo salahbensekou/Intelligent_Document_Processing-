@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Résultat de comparaison</h1>
+
+<div class="card card-body mb-3">
+  <div><strong>Documents:</strong>
+    {% for d in documents %}
+      <span class="badge bg-secondary">#{{ d.id }} {{ d.filename }}</span>
+    {% endfor %}
+  </div>
+  <div class="mt-2"><strong>Recommendation:</strong> {{ comparison.recommendation }}</div>
+</div>
+
+{% if comparison.global_anomalies and comparison.global_anomalies|length > 0 %}
+  <div class="alert alert-danger">
+    <strong>Anomalies critiques:</strong> {{ comparison.global_anomalies|length }}
+  </div>
+{% endif %}
+
+<h2 class="h6 mt-3">Comparaisons</h2>
+{% for c in comparison.comparisons %}
+  <div class="card card-body mb-3">
+    <div class="d-flex justify-content-between">
+      <div>
+        <strong>Doc {{ c.doc1_index + 1 }} vs Doc {{ c.doc2_index + 1 }}</strong>
+      </div>
+      <div>
+        <span class="badge bg-info text-dark">Match: {{ (c.match_score*100)|round(0) }}%</span>
+        {% if c.summary.is_same_person %}
+          <span class="badge bg-success">Même personne</span>
+        {% else %}
+          <span class="badge bg-danger">Différent</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if c.anomalies and c.anomalies|length > 0 %}
+      <hr>
+      <h3 class="h6">Anomalies</h3>
+      <ul class="mb-0">
+        {% for a in c.anomalies %}
+          <li><strong>{{ a.field }}</strong> — {{ a.message }} <span class="badge bg-secondary">{{ a.severity }}</span></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted mb-0 mt-2">Aucune anomalie.</p>
+    {% endif %}
+  </div>
+{% endfor %}
+{% endblock %}

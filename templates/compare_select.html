@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Comparer des documents</h1>
+
+<form method="post" class="card card-body">
+  <p class="text-muted">Sélectionne au moins 2 documents.</p>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+      <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Fichier</th>
+          <th>Type</th>
+          <th>Complétude</th>
+          <th>Upload</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in documents %}
+        <tr>
+          <td><input type="checkbox" name="doc_ids" value="{{ d.id }}"></td>
+          <td>{{ d.id }}</td>
+          <td>{{ d.filename }}</td>
+          <td>{{ d.document_type }}</td>
+          <td>{{ (d.completeness*100)|round(0) if d.completeness is not none else "N/A" }}%</td>
+          <td>{{ d.uploaded_at.strftime("%d/%m/%Y %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <button class="btn btn-primary" type="submit">Comparer</button>
+</form>
+{% endblock %}

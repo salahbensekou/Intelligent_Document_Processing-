@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Documents</h1>
+
+{% if documents %}
+<div class="table-responsive">
+  <table class="table table-sm table-striped align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Fichier</th>
+        <th>Type</th>
+        <th>Complétude</th>
+        <th>Upload</th>
+        <th>Anomalies</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in documents %}
+      <tr>
+        <td>{{ d.id }}</td>
+        <td>{{ d.filename }}</td>
+        <td>{{ d.type }}</td>
+        <td>{{ d.completeness }}</td>
+        <td>{{ d.uploaded_at }}</td>
+        <td>
+          {% if d.has_anomalies %}
+            <span class="badge bg-warning text-dark">Oui</span>
+          {% else %}
+            <span class="badge bg-success">Non</span>
+          {% endif %}
+        </td>
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('view_document', doc_id=d.id) }}">Voir</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">Aucun document pour le moment.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Upload & Extraction</h1>
+
+<form method="post" enctype="multipart/form-data" class="card card-body mb-4">
+  <div class="mb-3">
+    <label class="form-label">Fichiers (PDF, DOCX, images)</label>
+    <input class="form-control" type="file" name="files" multiple required>
+  </div>
+  <button class="btn btn-primary" type="submit">Analyser</button>
+</form>
+
+{% if results %}
+  <h2 class="h5">Résultats</h2>
+  <div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Fichier</th>
+          <th>Type</th>
+          <th>Complétude</th>
+          <th>Statut</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td>{{ r.filename }}</td>
+          <td>{{ r.document_type or "unknown" }}</td>
+          <td>{{ r.completeness or "N/A" }}</td>
+          <td>
+            {% if r.status == "success" %}
+              <span class="badge bg-success">OK</span>
+            {% else %}
+              <span class="badge bg-danger">Erreur</span>
+              <div class="small text-muted">{{ r.error }}</div>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.doc_id %}
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('view_document', doc_id=r.doc_id) }}">Détails</a>
+              <a class="btn btn-sm btn-outline-success" href="{{ url_for('export_document', doc_id=r.doc_id) }}">Export Excel</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}
